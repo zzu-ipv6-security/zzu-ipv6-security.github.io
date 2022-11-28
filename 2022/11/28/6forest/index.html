@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法 | IPv6 网络安全技术学术分享</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="本文提出了一个地址扫描算法6Forest，利用隔离森林算法检测离群种子，可以有效的生成具有较高活动概率的候选IPv6地址，本文发表于IEEE组织在通信网络领域的旗舰性会议INFOCOM，也是CCF认定的A类会议。 背景介绍自 2011 年世界 IPv6 日和 2012 年启动以来，由于移动互联网和云计算的强烈需求，近年来 IPv6 被广泛实施和采。2021 年 7 月，超过 30% 的谷歌用户通过">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法">
+<meta property="og:url" content="https://zzu-ipv6-security.github.io/2022/11/28/6forest/index.html">
+<meta property="og:site_name" content="IPv6 网络安全技术学术分享">
+<meta property="og:description" content="本文提出了一个地址扫描算法6Forest，利用隔离森林算法检测离群种子，可以有效的生成具有较高活动概率的候选IPv6地址，本文发表于IEEE组织在通信网络领域的旗舰性会议INFOCOM，也是CCF认定的A类会议。 背景介绍自 2011 年世界 IPv6 日和 2012 年启动以来，由于移动互联网和云计算的强烈需求，近年来 IPv6 被广泛实施和采。2021 年 7 月，超过 30% 的谷歌用户通过">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/11/28/6forest/fig1.png">
+<meta property="article:published_time" content="2022-11-28T13:06:10.000Z">
+<meta property="article:modified_time" content="2022-11-28T13:12:22.658Z">
+<meta property="article:author" content="vhqr0@github.com">
+<meta property="article:tag" content="地址生成">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zzu-ipv6-security.github.io/2022/11/28/6forest/fig1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="IPv6 网络安全技术学术分享" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">IPv6 网络安全技术学术分享</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">郑州大学 IPv6 网络安全技术研究小组</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://zzu-ipv6-security.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-6forest" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/11/28/6forest/" class="article-date">
+  <time class="dt-published" datetime="2022-11-28T13:06:10.000Z" itemprop="datePublished">2022-11-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>本文提出了一个地址扫描算法6Forest，利用隔离森林算法检测离群种子，可以有效的生成具有较高活动概率的候选IPv6地址，本文发表于IEEE组织在通信网络领域的旗舰性会议INFOCOM，也是CCF认定的A类会议。</p>
+<h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>自 2011 年世界 IPv6 日和 2012 年启动以来，由于移动互联网和云计算的强烈需求，近年来 IPv6 被广泛实施和采。2021 年 7 月，超过 30% 的谷歌用户通过IPv6访问其服务。因此，互联网上的IPv6路由条目数量正在迅速增加。</p>
+<p>在互联网范围内进行探测和分析如此庞大的地址空间的调查是非同寻常的，这阻碍了对基于 IPv6 的互联网进行有效的网络资产评估和风险分析。为了缓解这一缺陷，IPv6 目标生成被用作高效 IPv6 扫描的重要步骤。通过用一组已知地址（即种子）来表征和建模 IPv6 地址空间的结构，它可以生成具有较高活动概率的候选地址，从而缩小探测范围并显著加快扫描。但是目前的算法（6Hit、6Tree 等）存在以下问题：因离群种子与不恰当的分裂指示符导致的地址扫描低命中率；为了解决以上问题提出了 6Forest 算法。</p>
+<h1 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h1><ol>
+<li>IPv6 地址向量：将 IPv6 地址按照十六进制模式转换为一个 32 维地址向量；</li>
+<li>种子（地址）区域：在空间划分之后，所有给定种子 S 的集合被划分为小规模种子簇，这些种子簇通常是所谓的种子（地址）区域，除了那些仅由一个种子组成的簇。离群种子在所有维度上都有固定的半字节，不能指导目标生成。</li>
+</ol>
+<img src="/2022/11/28/6forest/fig1.png" class="" title="图1 给定地址区域的异常值示例">
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://zzu-ipv6-security.github.io/2022/11/28/6forest/" data-id="clb0t2hkw000055vlebgp6dxu" data-title="6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90/" rel="tag">地址生成</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90/" rel="tag">地址生成</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90/" style="font-size: 10px;">地址生成</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/11/28/6forest/">6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 vhqr0@github.com<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
