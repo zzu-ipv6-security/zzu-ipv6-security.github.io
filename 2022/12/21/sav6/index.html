@@ -4,15 +4,27 @@
   <meta charset="utf-8">
   
   
-  <title>IPv6 网络安全技术学术分享</title>
+  <title>SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet | IPv6 网络安全技术学术分享</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="IPv6 网络安全技术学术分享">
-<meta property="og:url" content="https://zzu-ipv6-security.github.io/index.html">
+  <meta name="description" content="利用IPv6地址长特性，设计一种包含自治系统编号（Autonomous System Bumber，ASN）的AGA地址（ASN Generated Addresses），通过检查AGA地址中包括的ASN是否与前缀对应的ASN1一致，来验证自治系统间IPv6地址的真实性。 研究背景：Internet最初的设计假设所有主机都是可信的。然而，随着互联网的发展，这一假设不再成立。在当今的互联网环境中，会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet">
+<meta property="og:url" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/index.html">
 <meta property="og:site_name" content="IPv6 网络安全技术学术分享">
+<meta property="og:description" content="利用IPv6地址长特性，设计一种包含自治系统编号（Autonomous System Bumber，ASN）的AGA地址（ASN Generated Addresses），通过检查AGA地址中包括的ASN是否与前缀对应的ASN1一致，来验证自治系统间IPv6地址的真实性。 研究背景：Internet最初的设计假设所有主机都是可信的。然而，随着互联网的发展，这一假设不再成立。在当今的互联网环境中，会">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig1.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig2.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig3.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig4.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig5.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig6.png">
+<meta property="article:published_time" content="2022-12-21T10:06:32.000Z">
+<meta property="article:modified_time" content="2022-12-21T10:11:51.317Z">
 <meta property="article:author" content="vhqr0@github.com">
+<meta property="article:tag" content="地址溯源">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zzu-ipv6-security.github.io/2022/12/21/sav6/fig1.png">
   
     <link rel="alternate" href="/atom.xml" title="IPv6 网络安全技术学术分享" type="application/atom+xml">
   
@@ -73,9 +85,7 @@
 </header>
 
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-sav6" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-sav6" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/12/21/sav6/" class="article-date">
   <time class="dt-published" datetime="2022-12-21T10:06:32.000Z" itemprop="datePublished">2022-12-21</time>
@@ -88,8 +98,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/12/21/sav6/">SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet</a>
+    <h1 class="p-name article-title" itemprop="headline name">
+      SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet
     </h1>
   
 
@@ -152,95 +162,19 @@
     </footer>
   </div>
   
-</article>
-
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-6forest" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/11/28/6forest/" class="article-date">
-  <time class="dt-published" datetime="2022-11-28T13:06:10.000Z" itemprop="datePublished">2022-11-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/11/28/6forest/">6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法</a>
-    </h1>
+    <a href="/2022/11/28/6forest/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>本文提出了一个地址扫描算法6Forest，利用隔离森林算法检测离群种子，可以有效的生成具有较高活动概率的候选IPv6地址，本文发表于IEEE组织在通信网络领域的旗舰性会议INFOCOM，也是CCF认定的A类会议。</p>
-<h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>自 2011 年世界 IPv6 日和 2012 年启动以来，由于移动互联网和云计算的强烈需求，近年来 IPv6 被广泛实施和采。2021 年 7 月，超过 30% 的谷歌用户通过IPv6访问其服务。因此，互联网上的IPv6路由条目数量正在迅速增加。</p>
-<p>在互联网范围内进行探测和分析如此庞大的地址空间的调查是非同寻常的，这阻碍了对基于 IPv6 的互联网进行有效的网络资产评估和风险分析。为了缓解这一缺陷，IPv6 目标生成被用作高效 IPv6 扫描的重要步骤。通过用一组已知地址（即种子）来表征和建模 IPv6 地址空间的结构，它可以生成具有较高活动概率的候选地址，从而缩小探测范围并显著加快扫描。但是目前的算法（6Hit、6Tree 等）存在以下问题：因离群种子与不恰当的分裂指示符导致的地址扫描低命中率；为了解决以上问题提出了 6Forest 算法。</p>
-<h1 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h1><ol>
-<li>IPv6 地址向量：将 IPv6 地址按照十六进制模式转换为一个 32 维地址向量；</li>
-<li>种子（地址）区域：在空间划分之后，所有给定种子 S 的集合被划分为小规模种子簇，这些种子簇通常是所谓的种子（地址）区域，除了那些仅由一个种子组成的簇。离群种子在所有维度上都有固定的半字节，不能指导目标生成。</li>
-</ol>
-<img src="/2022/11/28/6forest/fig1.png" class="" title="图1 给定地址区域的异常值示例">
-
-<ol start="3">
-<li>固定维度和可变维度：对于给定的地址区域，所有种子具有相同半字节值的维度是所谓的固定维度，否则它们是自由维度。按照惯例，我们使用通配符符号“*”表示不确定的半字节（自由维度）。</li>
-<li>覆盖：给定地址区域的自由维度的非唯一半字节的频率和。直观地说，覆盖的目的是找到最大限度减少分离种子数量的分裂指标。</li>
-</ol>
-<img src="/2022/11/28/6forest/fig2.png" class="" title="公式">
-
-<p>其中，K是种子的个数。</p>
-<h1 id="6Forest-设计"><a href="#6Forest-设计" class="headerlink" title="6Forest 设计"></a>6Forest 设计</h1><p>给定一组已知地址，6Forest首先将其视为初始地址区域，然后使用最大覆盖率的分割指标将IPv6地址空间迭代分割成更小的区域。在一轮空间分割之前，它为每个区域建立一个森林结构，并利用增强的隔离森林算法来删除离群的地址。最后，它对分割后的地址区域进行预扫描，并根据结果生成IPv6地址。</p>
-<img src="/2022/11/28/6forest/fig3.png" class="" title="图2 6Forest总体设计">
-
-<ol>
-<li>空间分区<br>将种子集S作为一个节点放入队列中；<br>若队列非空且节点中元素大于预算β，则将弹出队首元素，按照如下方法进行分裂：<br>计算每一个可变维度的覆盖值，从覆盖值最大的维度开始拆分节点，若有多个维度的覆盖值相同，那么就选择最左边的维度作为分裂指示符；<br>将分裂出的节点在放入队列中；<br>直到节点中的元素个数小于预算β，记录当前节点的种子地址区域；</li>
-</ol>
-<img src="/2022/11/28/6forest/fig4.png" class="" title="图3 空间分区实例">
-
-<ol start="2">
-<li>异常值种子检测<br>如图构造出所有可变维度的孤立树（isolated trees），并对孤立种子进行评分：若一个孤立树上有n个孤立种子，则将每个孤立种子的权重设置为1&#x2F;n；<br>将所有种子的权重相加，若大于阈值则认为该种子为异常值；<br>阈值的算法：设有f个可变维度和m个种子的地址区域，可知所有自由维度上的异常值表示的得分总和等于f，所以每个种子的得分期望是f&#x2F;m；</li>
-</ol>
-<img src="/2022/11/28/6forest/fig5.png" class="" title="图4 图1中用于种子区域异常值检测的隔离林示例（部分显示）">
-
-<ol start="3">
-<li>命中率估计<br>考虑到区域中的种子密度可能与区域中的活动地址密度不太一致，即使在探测范围较窄的区域中，根据种子数量或随机分配预算也是不明智的。因此，6Forest对地址区域的样本进行预扫描，以估计命中率，然后对那些具有高估计命中率的区域进行大规模扫描。<br>经证明抽样命中率可以代表整个地区在允许误差范围内的命中率。<br>从技术上讲，并不是所有的地址区域都被用于命中率估计，特别是那些自由维度很少的地址区域（ζ≤ 3） 因为直接进行全扫描是一个不错的选择。</li>
-</ol>
-<h1 id="与其他算法比较"><a href="#与其他算法比较" class="headerlink" title="与其他算法比较"></a>与其他算法比较</h1><ol>
-<li>数据集描述<br>Gasser等人收集的活动IPv6地址，经必要的主动测试之后形成的2.8M个“主动”IPv6地址，即种子S，并从S中进行下采样（从S中随机抽取一定数量的地址）和偏采样（对S中的地址进行排序，然后提取一定数量的相邻地址）分别形成候选种子集C_i,i∈{1, 2, 3}与C_i,i∈{4,5,6,7,8}；<br>更多种子集的细节见表一。<br>为了公平比较，我们进行了离线的预处理步骤（即6Tree和6Hit的空间划分，6Gen的种子聚类，Entropy&#x2F;IP的种子统计）。这是出于以下考虑：一些方法（如6Gen）需要巨大的计算资源，而IPv6目标生成的主要指标是大规模扫描的命中率。</li>
-</ol>
-<img src="/2022/11/28/6forest/fig6.png" class="" title="表1 种子集特征">
-
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>与现有的基于种子区域的目标生成相比，6Forest成功地细化了种子区域，并将整个扫描空间减少了几个数量级，这可以解释6Forest的高性能。</p>
-<img src="/2022/11/28/6forest/fig7.png" class="" title="图5 低预算扫描结果图">
-
-<p>用低预算进行扫描：我们比较了6Forest与其他几种算法，结果如上图所示，可以发现基于空间划分的方法（即6Forest、6Hit和6Tree）发现的地址数量比其他方法高得多。且6Forest在所有的下采样数据集C_i,i∈{1, 2, 3}和最大的偏向采样数据集C_6上都优于最先进的方法，这表明了6Forest的强大能力。而在小偏采样数据集（ C_4, C_5  ）比6Hit弱。</p>
-<img src="/2022/11/28/6forest/fig8.png" class="" title="图6 高预算扫描结果图">
-
-<p>高预算扫描：高预算扫描超出了一些算法的能力，因此只比较6Forst和6Tree，如左图所示，在扫描过程中，命中率都有所下降，6Forest的性能总体上保持在比6Tree高的水平。<br>综上所述，在IPv6互联网上的大规模扫描表明，6Forest在候选数据集C_i,i∈{4, 5}上与最先进的方法（6Hit）相当，在所有其他候选数据集上取得了3.17%-48.19%的命中率，这分别是低预算扫描的116.5%-266.7%和高预算扫描的大约15倍-21倍的改进。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://zzu-ipv6-security.github.io/2022/11/28/6forest/" data-id="clb0t2hkw000055vlebgp6dxu" data-title="6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法" class="article-share-link">分享</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90/" rel="tag">地址生成</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
-
-
-
-  
 
 
 </section>
