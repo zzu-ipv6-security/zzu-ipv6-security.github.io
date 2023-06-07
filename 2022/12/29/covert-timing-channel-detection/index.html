@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  
-  
-  <title>Covert timing channel detection method based on time interval and payload length analysis | IPv6 网络安全技术学术分享</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="今天分享的论文的主题是基于时间间隔和载荷长度分析的时序型隐蔽信道检测方法，研究团队来自于四川大学和国防科技大学。该论文对目前主流的5种时序型网络隐蔽信道进行分析，并提出了一种基于k近邻（k-NN）算法的隐蔽时间信道检测方法。该方法利用一系列与时间间隔和载荷长度相关的统计量作为特征来训练机器学习模型，并使用10折交叉验证来提高模型性能。实验结果表明，该模型具有很好的检测效果，检测准确率为96%，AU">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zzu-ipv6-security.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.17.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="今天分享的论文的主题是基于时间间隔和载荷长度分析的时序型隐蔽信道检测方法，研究团队来自于四川大学和国防科技大学。该论文对目前主流的5种时序型网络隐蔽信道进行分析，并提出了一种基于k近邻（k-NN）算法的隐蔽时间信道检测方法。该方法利用一系列与时间间隔和载荷长度相关的统计量作为特征来训练机器学习模型，并使用10折交叉验证来提高模型性能。实验结果表明，该模型具有很好的检测效果，检测准确率为96%，AU">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Covert timing channel detection method based on time interval and payload length analysis">
 <meta property="og:url" content="https://zzu-ipv6-security.github.io/2022/12/29/covert-timing-channel-detection/index.html">
@@ -34,89 +47,175 @@
 <meta property="article:tag" content="隐蔽信道">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://zzu-ipv6-security.github.io/2022/12/29/covert-timing-channel-detection/fig1.jpg">
-  
-    <link rel="alternate" href="/atom.xml" title="IPv6 网络安全技术学术分享" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
 
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+<link rel="canonical" href="https://zzu-ipv6-security.github.io/2022/12/29/covert-timing-channel-detection/">
 
-  
-<meta name="generator" content="Hexo 6.3.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">IPv6 网络安全技术学术分享</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">郑州大学 IPv6 网络安全技术研究小组</a>
-        </h2>
-      
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zzu-ipv6-security.github.io/2022/12/29/covert-timing-channel-detection/","path":"2022/12/29/covert-timing-channel-detection/","title":"Covert timing channel detection method based on time interval and payload length analysis"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Covert timing channel detection method based on time interval and payload length analysis | IPv6 网络安全技术学术分享</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">IPv6 网络安全技术学术分享</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">郑州大学 IPv6 网络安全技术研究小组</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
         
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://zzu-ipv6-security.github.io"></form>
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#01"><span class="nav-number">1.</span> <span class="nav-text">01</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#02"><span class="nav-number">3.</span> <span class="nav-text">02</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">研究方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6"><span class="nav-number">4.1.</span> <span class="nav-text">1 系统框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">4.2.</span> <span class="nav-text">2 特征提取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">3 分类算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#03"><span class="nav-number">5.</span> <span class="nav-text">03</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">6.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%9E%E9%AA%8C%E6%8B%93%E6%89%91"><span class="nav-number">6.1.</span> <span class="nav-text">1 实验拓扑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%9A%90%E8%94%BD%E4%BF%A1%E9%81%93%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.2.</span> <span class="nav-text">2 隐蔽信道类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">6.3.</span> <span class="nav-text">3 数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%A8%A1%E5%9E%8B%E7%94%9F%E6%88%90"><span class="nav-number">6.4.</span> <span class="nav-text">4 模型生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">6.4.1.</span> <span class="nav-text">4.1 交叉验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0"><span class="nav-number">6.4.2.</span> <span class="nav-text">**4.2 **性能评估</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#04"><span class="nav-number">7.</span> <span class="nav-text">04</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">vhqr0@github.com</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
       </div>
     </div>
-  </div>
-</header>
 
-      <div class="outer">
-        <section id="main"><article id="post-covert-timing-channel-detection" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/12/29/covert-timing-channel-detection/" class="article-date">
-  <time class="dt-published" datetime="2022-12-29T04:56:05.000Z" itemprop="datePublished">2022-12-29</time>
-</a>
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      Covert timing channel detection method based on time interval and payload length analysis
-    </h1>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
   
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zzu-ipv6-security.github.io/2022/12/29/covert-timing-channel-detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="vhqr0@github.com">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IPv6 网络安全技术学术分享">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Covert timing channel detection method based on time interval and payload length analysis | IPv6 网络安全技术学术分享">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Covert timing channel detection method based on time interval and payload length analysis
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-29 12:56:05" itemprop="dateCreated datePublished" datetime="2022-12-29T12:56:05+08:00">2022-12-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-06 21:12:14" itemprop="dateModified" datetime="2023-01-06T21:12:14+08:00">2023-01-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
       </header>
+
     
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>今天分享的论文的主题是基于时间间隔和载荷长度分析的时序型隐蔽信道检测方法，研究团队来自于四川大学和国防科技大学。该论文对目前主流的5种时序型网络隐蔽信道进行分析，并提出了一种基于k近邻（k-NN）算法的隐蔽时间信道检测方法。该方法利用一系列与时间间隔和载荷长度相关的统计量作为特征来训练机器学习模型，并使用10折交叉验证来提高模型性能。实验结果表明，该模型具有很好的检测效果，检测准确率为96%，AUC值为0.9737。该论文发表于2020年Computers &amp; Security（CCF推荐B类国际学术期刊）。</p>
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>今天分享的论文的主题是基于时间间隔和载荷长度分析的时序型隐蔽信道检测方法，研究团队来自于四川大学和国防科技大学。该论文对目前主流的5种时序型网络隐蔽信道进行分析，并提出了一种基于k近邻（k-NN）算法的隐蔽时间信道检测方法。该方法利用一系列与时间间隔和载荷长度相关的统计量作为特征来训练机器学习模型，并使用10折交叉验证来提高模型性能。实验结果表明，该模型具有很好的检测效果，检测准确率为96%，AUC值为0.9737。该论文发表于2020年Computers &amp; Security（CCF推荐B类国际学术期刊）。</p>
 <img src="/2022/12/29/covert-timing-channel-detection/fig1.jpg" class="">
 
 
@@ -185,150 +284,100 @@
 
 <h1 id="04"><a href="#04" class="headerlink" title="04"></a><strong>04</strong></h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h1><p>时序隐蔽信道是最臭名昭著的信息窃取方法之一。虽然目前已有不少关于时序隐蔽信道检测的研究，但这些方法只能有效地检测出特定类型的时间隐通道。为了克服这些方法的不足，文章提出了一种基于kNN算法的隐蔽时间信道检测方法，该方法可以达到较好的检测性能，但从长远来看，攻击者已经开始研究如何避免对隐蔽时间信道的统计分析。显然，文章中提取的用于隐蔽定时信道检测的特征在未来将失效。</p>
 
-      
     </div>
-    <footer class="article-footer">
-      <a data-url="https://zzu-ipv6-security.github.io/2022/12/29/covert-timing-channel-detection/" data-id="clckjejpw00004zvl65gjggii" data-title="Covert timing channel detection method based on time interval and payload length analysis" class="article-share-link">分享</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9A%90%E8%94%BD%E4%BF%A1%E9%81%93/" rel="tag">隐蔽信道</a></li></ul>
 
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9A%90%E8%94%BD%E4%BF%A1%E9%81%93/" rel="tag"># 隐蔽信道</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/21/sav6/" rel="prev" title="SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet">
+                  <i class="fa fa-chevron-left"></i> SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/06/mechanism-to-prevent-the-abuse-of-ipv6-frag/" rel="next" title="一种在OpenFlow网络中防御IPv6分片攻击的机制">
+                  一种在OpenFlow网络中防御IPv6分片攻击的机制 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
     </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">vhqr0@github.com</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2023/01/06/mechanism-to-prevent-the-abuse-of-ipv6-frag/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">前一篇</strong>
-      <div class="article-nav-title">
-        
-          一种在OpenFlow网络中防御IPv6分片攻击的机制
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2022/12/21/sav6/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">后一篇</strong>
-      <div class="article-nav-title">SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9C%B0%E5%9D%80%E6%BA%AF%E6%BA%90/" rel="tag">地址溯源</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90/" rel="tag">地址生成</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4/" rel="tag">安全防护</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C%E6%89%AB%E6%8F%8F/" rel="tag">网络扫描</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%90%E8%94%BD%E4%BF%A1%E9%81%93/" rel="tag">隐蔽信道</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/%E5%9C%B0%E5%9D%80%E6%BA%AF%E6%BA%90/" style="font-size: 10px;">地址溯源</a> <a href="/tags/%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90/" style="font-size: 10px;">地址生成</a> <a href="/tags/%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4/" style="font-size: 10px;">安全防护</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E6%89%AB%E6%8F%8F/" style="font-size: 10px;">网络扫描</a> <a href="/tags/%E9%9A%90%E8%94%BD%E4%BF%A1%E9%81%93/" style="font-size: 10px;">隐蔽信道</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">二月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/02/06/rdns/">基于 DNS 协议收集全球 IPv6 地址数据集</a>
-          </li>
-        
-          <li>
-            <a href="/2023/01/06/mechanism-to-prevent-the-abuse-of-ipv6-frag/">一种在OpenFlow网络中防御IPv6分片攻击的机制</a>
-          </li>
-        
-          <li>
-            <a href="/2022/12/29/covert-timing-channel-detection/">Covert timing channel detection method based on time interval and payload length analysis</a>
-          </li>
-        
-          <li>
-            <a href="/2022/12/21/sav6/">SAV6 A Novel Inter-AS Source Address Validation Protocol for IPv6 Internet</a>
-          </li>
-        
-          <li>
-            <a href="/2022/11/28/6forest/">6Forest：基于集成学习的 Internet 范围 IPv6 扫描目标生成方法</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 vhqr0@github.com<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
 
     </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
+  </footer>
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
   </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
 </body>
 </html>
