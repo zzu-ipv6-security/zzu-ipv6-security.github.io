@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zzu-ipv6-security.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.17.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="In the IP of the Beholder: Strategies for Active IPv6 Topology Discovery IMC 2018  与 IPv4 相比，IPv6 的拓扑发现有以下变化：  IPv6 路由器有严格的 ICMPv6 速率限制，在拓扑方法上应尽可能地减缓速率 限制的影响； IPv6 地址空间更大、更稀疏，地址分配策略更多样，拓扑目标选择有很大影响；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大规模 IPv6 网络主动拓扑发现策略研究">
+<meta property="og:url" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/index.html">
+<meta property="og:site_name" content="IPv6 网络安全技术学术分享">
+<meta property="og:description" content="In the IP of the Beholder: Strategies for Active IPv6 Topology Discovery IMC 2018  与 IPv4 相比，IPv6 的拓扑发现有以下变化：  IPv6 路由器有严格的 ICMPv6 速率限制，在拓扑方法上应尽可能地减缓速率 限制的影响； IPv6 地址空间更大、更稀疏，地址分配策略更多样，拓扑目标选择有很大影响；">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig1.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig2.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig3.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig4.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig5.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig6.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig7.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig8.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig9.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig10.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig11.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig12.png">
+<meta property="og:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig13.png">
+<meta property="article:published_time" content="2023-06-19T02:03:29.000Z">
+<meta property="article:modified_time" content="2023-06-19T02:38:38.313Z">
+<meta property="article:author" content="vhqr0@github.com">
+<meta property="article:tag" content="网络测量">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/fig1.png">
+
+
+<link rel="canonical" href="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/","path":"2023/06/19/topology-imc2018/","title":"大规模 IPv6 网络主动拓扑发现策略研究"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>大规模 IPv6 网络主动拓扑发现策略研究 | IPv6 网络安全技术学术分享</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">IPv6 网络安全技术学术分享</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">郑州大学 IPv6 网络安全技术研究小组</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E6%95%88%E6%8B%93%E6%89%91part1"><span class="nav-number">1.</span> <span class="nav-text">高效拓扑（Part1）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AFdoubletree"><span class="nav-number">1.1.</span> <span class="nav-text">背景：DoubleTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AFyarrp"><span class="nav-number">1.2.</span> <span class="nav-text">背景：yarrp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E6%94%B9%E8%BF%9B1yarrp6"><span class="nav-number">1.3.</span> <span class="nav-text">工具改进1：yarrp6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E6%94%B9%E8%BF%9B2%E5%A1%AB%E5%85%85%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">工具改进2：填充模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E6%94%B9%E8%BF%9B3%E6%94%B9%E8%BF%9B-doubletree-%E7%BC%93%E5%AD%98"><span class="nav-number">1.5.</span> <span class="nav-text">工具改进3：改进 DoubleTree 缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B41%E4%B8%8A%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.6.</span> <span class="nav-text">参数调整1：上层协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B42%E6%8E%A2%E6%B5%8B%E9%80%9F%E7%8E%87"><span class="nav-number">1.7.</span> <span class="nav-text">参数调整2：探测速率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B43%E5%A1%AB%E5%85%85%E6%A8%A1%E5%BC%8F-mttl"><span class="nav-number">1.8.</span> <span class="nav-text">参数调整3：填充模式 mttl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E9%80%89%E6%8B%A9part2"><span class="nav-number">2.</span> <span class="nav-text">目标选择（Part2）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E5%B7%B2%E6%9C%89%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.1.</span> <span class="nav-text">背景：已有的大规模拓扑发现系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E9%80%89%E6%8B%A9%E7%A7%8D%E5%AD%90%E5%9C%B0%E5%9D%80%E6%94%B6%E9%9B%86"><span class="nav-number">2.2.</span> <span class="nav-text">目标选择：种子地址收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E9%80%89%E6%8B%A9%E5%89%8D%E7%BC%80%E9%80%89%E6%8B%A9"><span class="nav-number">2.3.</span> <span class="nav-text">目标选择：前缀选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E9%80%89%E6%8B%A9iid-%E9%80%89%E6%8B%A9"><span class="nav-number">2.4.</span> <span class="nav-text">目标选择：IID 选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90%E6%80%BB%E8%A7%88"><span class="nav-number">2.5.</span> <span class="nav-text">目标特征分析：总览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90%E6%95%B0%E9%87%8F%E5%88%86%E5%B8%83%E5%92%8C%E7%8B%AC%E7%AB%8B%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.6.</span> <span class="nav-text">目标特征分析：数量、分布和独立贡献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E7%89%B9%E5%BE%81%E5%88%86%E6%9E%90%E9%89%B4%E5%88%AB%E8%83%BD%E5%8A%9B"><span class="nav-number">2.7.</span> <span class="nav-text">目标特征分析：鉴别能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.8.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BApart3"><span class="nav-number">3.</span> <span class="nav-text">拓扑发现结果展示（Part3）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E8%A7%88"><span class="nav-number">3.1.</span> <span class="nav-text">总览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%95%88%E7%8E%87%E6%AF%94%E8%BE%83"><span class="nav-number">3.2.</span> <span class="nav-text">数据集拓扑发现效率比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E5%85%B6%E5%AE%83%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E7%B3%BB%E7%BB%9F%E6%AF%94%E8%BE%83"><span class="nav-number">3.3.</span> <span class="nav-text">与其它拓扑发现系统比较</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">vhqr0@github.com</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zzu-ipv6-security.github.io/2023/06/19/topology-imc2018/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="vhqr0@github.com">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="IPv6 网络安全技术学术分享">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="大规模 IPv6 网络主动拓扑发现策略研究 | IPv6 网络安全技术学术分享">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大规模 IPv6 网络主动拓扑发现策略研究
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-06-19 10:03:29 / 修改时间：10:38:38" itemprop="dateCreated datePublished" datetime="2023-06-19T10:03:29+08:00">2023-06-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><blockquote>
+<p>In the IP of the Beholder: Strategies for Active IPv6 Topology Discovery</p>
+<p>IMC 2018</p>
+</blockquote>
+<p>与 IPv4 相比，IPv6 的拓扑发现有以下变化：</p>
+<ol type="1">
+<li>IPv6 路由器有严格的 ICMPv6 速率限制，在拓扑方法上应尽可能地减缓速率 限制的影响；</li>
+<li>IPv6 地址空间更大、更稀疏，地址分配策略更多样，拓扑目标选择有很大影响；</li>
+</ol>
+<p>本文研究大规模的 IPv6 网络主动拓扑发现策略，主要有两方面贡献：</p>
+<ul>
+<li>高效拓扑（Part1）：
+<ol type="1">
+<li>在方法上：总结和改进已有的 traceroute 方法；</li>
+<li>在工具上：扩展和改进一个已有的 IPv4 traceroute 工具（yarrp）；</li>
+<li>在实践上：通过实际测量比较了不同 traceroute 参数的拓扑发现效果；</li>
+</ol></li>
+<li>目标选择（Part2）：
+<ol type="1">
+<li>总结过去的 IPv6 网络拓扑发现的目标选择的不足；</li>
+<li>提出一个拓扑目标生成方法和评价方法；</li>
+</ol></li>
+</ul>
+<p>最后，在以下几个方面分析了拓扑发现的结果（Part3）：</p>
+<ol type="1">
+<li>比较了不同数据集的拓扑发现结果的质量和效率；</li>
+<li>与 CAIDA 和 PIPE 的拓扑方法的效果进行比较；</li>
+</ol>
+<h2 id="高效拓扑part1">高效拓扑（Part1）</h2>
+<h3 id="背景doubletree">背景：DoubleTree</h3>
+<p>多目标的 traceroute 面临的第一个问题是进行了大量的重复探测。DoubleTree 算法的目标是减少多目标 traceroute 中的重复探测，有两个主要思想：</p>
+<ol type="1">
+<li>缓存：缓存所有探测到的节点；</li>
+<li>二分搜索：在一个拓扑路径中，尝试二分搜索：
+<ul>
+<li>最后一个已知的节点（B(2)）</li>
+<li>第一个目标节点（E(5)）</li>
+<li>填充两个节点间的路径（C(3)、(D4)）</li>
+</ul></li>
+</ol>
+<blockquote>
+<p>缓存：A、B</p>
+<p>拓扑路径：A(1) -&gt; B(2) -&gt; C(3) -&gt; D(4) -&gt; E(5) -&gt; E(6) -&gt; E(7)</p>
+</blockquote>
+<blockquote>
+<p>cite: Benoit Donnet, Philippe Raoult, Timur Friedman, and Mark Crovella. 2005. Efficient Algorithms for Large-Scale Topology Discovery. ACM SIGMETRICS Performance Evaluation Review 33, 1 (2005).</p>
+</blockquote>
+<h3 id="背景yarrp">背景：yarrp</h3>
+<p>过去的研究大多使用传统的 traceroute 工具：traceroute6 和 scamper，为了 缓解路由器 ICMPv6 速率限制的影响，必须限制探测的速率。</p>
+<p>yarrp 是第一个通过随机化提高效率的 IPv4 traceroute 工具，在保持高探测 效率的同时减缓了远离探测节点的路由器的负担。</p>
+<blockquote>
+<p>cite: Erik W. Gaston. 2017. High-frequency mapping of the IPv6 Internet using Yarrp. Master’s thesis. Naval Postgraduate School. http://hdl.handle.net/10945/52982.</p>
+</blockquote>
+<h3 id="工具改进1yarrp6">工具改进1：yarrp6</h3>
+<p>该研究首先尝试为 yarrp 添加 IPv6 支持，和 IPv4 一样，尽可能地将状态编 码到探测报文中，如图 4 所示。</p>
+<img src="/2023/06/19/topology-imc2018/fig1.png" class="">
+<h3 id="工具改进2填充模式">工具改进2：填充模式</h3>
+<p>traceroute 的 mttl（最大跳数）如果：</p>
+<ul>
+<li>太大：可能会浪费探测；</li>
+<li>太小：可能会丢失跳数；</li>
+</ul>
+<p>该研究为 yarrp 添加了填充模式：当 mttl 耗尽但仍未到达目标时，将尝试超 过 mttl 继续探测，直到到达目标或失去响应。</p>
+<p>填充模式允许 traceroute 设置一个偏小的 mttl，但仍可以探测偏大的路径。</p>
+<h3 id="工具改进3改进-doubletree-缓存">工具改进3：改进 DoubleTree 缓存</h3>
+<p>DoubleTree 的缓存有两个问题：</p>
+<ol type="1">
+<li>浪费计算资源：在大规模的拓扑发现中，全缓存会导致占用大量内存，以及 增加缓存查找的时间；</li>
+<li>拓扑变化不敏感：在长时间的拓扑发现中，无法感知到已缓存的拓扑的变化；</li>
+</ol>
+<p>该研究在探测中发现的意想不到的影响：某一跳的路由器由于速率限制暂时没有 响应，该空结果被缓存并被所有探测采用。</p>
+<p>该研究简化了 DoubleTree 的缓存：</p>
+<ol type="1">
+<li>添加了参数 mcttl（最大缓存跳数），即可缓存的节点的最大条数，可以避 免缓存远距离的无用节点；</li>
+<li>添加了缓存失效时间，当缓存失效时需要重新探测，可以感知已缓存的拓扑 的变化；</li>
+</ol>
+<h3 id="参数调整1上层协议">参数调整1：上层协议</h3>
+<p>理论上，traceroute 与上层协议无关，但是实践中可能受到不同的防火墙行为 的影响。</p>
+<p>该研究实际测试了不同上层协议（ICMPv6、UDP、TCP）对 traceroute 的影响， 发现 ICMPv6 收到的响应比 UDP 和 TCP 多 2.1% 和 2.3%，尤其是非 TTL 超时 响应，比 UDP 和 TCP 多 13.6% 和 24.3%，说明 ICMPv6 报文比 UDP 和 TCP 更深入网络。</p>
+<p>测量中选择上层协议为 ICMPv6。</p>
+<ul>
+<li>日期：2018.02</li>
+<li>数据集：CAIDA</li>
+<li>速率：20pps</li>
+</ul>
+<h3 id="参数调整2探测速率">参数调整2：探测速率</h3>
+<p>图 5 展示了不同速率（20、1k、2k）和不同探测方式（连续、随机）对探测的 影响，可以看到：</p>
+<ul>
+<li>当速率超过 20pps 时，连续探测和随机探测间有明显的差别；</li>
+<li>路由器有多样的速率限制行为，例如 a 的第 3 跳和 b 的第 5、9 跳；</li>
+</ul>
+<img src="/2023/06/19/topology-imc2018/fig2.png" class="">
+<ul>
+<li>日期：2018.04</li>
+<li>数据集：CAIDA</li>
+</ul>
+<h3 id="参数调整3填充模式-mttl">参数调整3：填充模式 mttl</h3>
+<p>表 6 展示了不同 mttl 的探测数据，可以看到当 mttl=16 时有最高的探测效率， 由于 ttl=5 的路由器的速率限制的影响，mttl=4 的填充数量远小于 mttl=8 的 填充数量。</p>
+<img src="/2023/06/19/topology-imc2018/fig3.png" class="">
+<p>测量中选择 mttl=16。</p>
+<ul>
+<li>日期：2018.05</li>
+<li>数据集：CAIDA</li>
+</ul>
+<h2 id="目标选择part2">目标选择（Part2）</h2>
+<h3 id="背景已有的大规模拓扑发现系统">背景：已有的大规模拓扑发现系统</h3>
+<p>CAIDA Ark 和 RIPE Atalas，它们采用相同的目标选择策略：前缀选择 BGP 通 告的所有 IPv6 前缀，IID 选择一个 ::1 和一个随机。</p>
+<p>下面的研究和 Ark 类似，但是目标选择了所有 BGP 前缀的 48 位子前缀，发现 了远比 Ark 更多的子网，证明了 Ark 的拓扑发现虽然有广度但没有深度，不能 发现细粒度的子网。</p>
+<blockquote>
+<p>cite: Justin P. Rohrer, Blake LaFever, and Robert Beverly. 2016. Empirical Study of Router IPv6 Interface Address Distributions. IEEE Internet Computing (Aug. 2016).</p>
+</blockquote>
+<h3 id="目标选择种子地址收集">目标选择：种子地址收集</h3>
+<p>该研究采用的种子地址数据集如表 1 所示，其中混合数据集 TUM 的来源如表 2 所示。</p>
+<img src="/2023/06/19/topology-imc2018/fig4.png" class="">
+<img src="/2023/06/19/topology-imc2018/fig5.png" class="">
+<h3 id="目标选择前缀选择">目标选择：前缀选择</h3>
+<p>该研究采用两种前缀选择方法：kn 和 zn。</p>
+<ul>
+<li>kn：作者过去提出的前缀匿名化方法，主要用于匿名化 CDN 地址；</li>
+<li>zn：多则截取，少则填充，例如 z64：2000::/16 =&gt; 2000:1234:5678:9abc:def0::/64；</li>
+</ul>
+<p>填充长度会影响探测的效果：更长的填充会产生更多的目标，也能发现更多的拓 扑。表 3 展示了不同填充长度对探测的影响，可以看到更短的填充长度探测效 率更高，但是更长的填充长度可以发现更多细粒度的接口。</p>
+<img src="/2023/06/19/topology-imc2018/fig6.png" class="">
+<p>测量中同时选择 z48 和 z64。</p>
+<h3 id="目标选择iid-选择">目标选择：IID 选择</h3>
+<p>对于每一个前缀候选项，都要在该前缀中选择一些 IID 进行探测。常见的 IID 有 4 种：</p>
+<ul>
+<li>::1</li>
+<li>随机 IID</li>
+<li>固定的伪随机 IID</li>
+<li>出现在种子地址中的 IID</li>
+</ul>
+<p>为了探究 IID 对拓扑发现的影响和引发非 TTL 超时的程度，该研究对 ::1 和 固定的伪随机 IID 的探测效果进行了比较，结果如表 4 所示，可以看到：</p>
+<ul>
+<li>::1 产生了更多的 ICMPv6 端口不可达报文，但总量仍然很少；</li>
+<li>进一步与 fiebig 比较，发现 fiebig 产生的端口不可达报文占 2.3%，说明 fiebig 的探测更接近目标主机；</li>
+</ul>
+<img src="/2023/06/19/topology-imc2018/fig7.png" class="">
+<p>由于 ::1 和固定的伪随机 IID 差距很小，测量中选择固定的伪随机 IID。</p>
+<ul>
+<li>日期：？</li>
+<li>数据集：cdn-k256-z64</li>
+</ul>
+<h3 id="目标特征分析总览">目标特征分析：总览</h3>
+<img src="/2023/06/19/topology-imc2018/fig8.png" class="">
+<h3 id="目标特征分析数量分布和独立贡献">目标特征分析：数量、分布和独立贡献</h3>
+<p>图 2 分析了每个 z64 目标集的独立贡献，可以看到目标集的大小与分布的独立 贡献没有相关性，最小的目标集有最多的分布独立贡献。</p>
+<img src="/2023/06/19/topology-imc2018/fig9.png" class="">
+<h3 id="目标特征分析鉴别能力">目标特征分析：鉴别能力</h3>
+<p>该研究提出了数据集对拓扑发现深度（子网鉴别能力）的度量：DPL（鉴别前缀 长度）。数据集中一个地址的 DPL 是与数据集中距离最近的地址的相同前缀比 特长度。DPL 越大，拓扑发现的深度越大（子网鉴别能力越强）。举例：</p>
+<ul>
+<li>地址 2000::，若在数据集中与该地址距离最近的地址为 2001::，则该地址的 DPL=16；</li>
+<li>假设 CAIDA Ark 的目标前缀长度都为 32，其 DPL 都为 32；[Empirical...] 研究的目标前缀长度都为 48，其 DPL 都为 48；</li>
+</ul>
+<img src="/2023/06/19/topology-imc2018/fig10.png" class="">
+<p>图 3a 展示了每个目标集的 DPL 分布，可以看到 caida 的 DPL 有一半不超过 48，拓扑发现深度很浅，而 fiebig 的 DPL 超过 70% 为 64。</p>
+<p>图 3b 展示了当组合使用数据集时，会提升每个数据集的拓扑发现深度。更小的 数据集更容易收到影响，更密集的数据集更不容易收到影响。举例：</p>
+<ul>
+<li>在上例中，如果与其它数据集组合后，距离最近的地址为 2000:1::，则 DPL=32；</li>
+</ul>
+<h3 id="总结">总结</h3>
+<p>[Empirical...] 研究表明，CAIDA Ark 的目标选择虽然广泛且无偏见，但并非 是完美的，不同 BGP 前缀间是不等价的，少数前缀含有更密集的信息，需要更 细粒度的探测。[Empirical...] 研究使用的无偏见的方法缺乏效率（以月计算）， 也导致其探测缺乏深度。</p>
+<p>为了在探测的深度、偏见和效率间取得平衡点，该研究首先提出了拓扑发现深度 的度量（DPL），对几个数据集进行静态分析，最后发现可以组合多种数据集构 建理想的数据集。</p>
+<h2 id="拓扑发现结果展示part3">拓扑发现结果展示（Part3）</h2>
+<h3 id="总览">总览</h3>
+<img src="/2023/06/19/topology-imc2018/fig11.png" class="">
+<img src="/2023/06/19/topology-imc2018/fig12.png" class="">
+<p>结果符合预期：混合数据集 TUM 和 CDN 数据集的表现最好，虽然深入研究发现 有两个 AS 贡献了大量同质的 EUI-64 类型 IID 的路由器接口，但是去除这些 数据后这两个数据集仍然发现了最多的路由器接口；在广度贡献上，CDN 几乎没 有贡献，而 TUM 则是主要贡献者之一，DNS 数据集和随机数据集也是主要贡献 者。</p>
+<h3 id="数据集拓扑发现效率比较">数据集拓扑发现效率比较</h3>
+<img src="/2023/06/19/topology-imc2018/fig13.png" class="">
+<p>caida 数据集虽然在数量和广度上表现不佳，但比较拓扑发现的效率后发现 caida 和 dnsdb 是效率最高的数据集，只是在规模上与其它数据集有所差距。</p>
+<h3 id="与其它拓扑发现系统比较">与其它拓扑发现系统比较</h3>
+<table>
+<thead>
+<tr class="header">
+<th>拓扑发现系统</th>
+<th>Ark</th>
+<th>Atlas</th>
+<th>本研究</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>探测节点数量</td>
+<td>65</td>
+<td>4333</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>探测目标数量</td>
+<td>349k</td>
+<td>343k</td>
+<td>12.6M</td>
+</tr>
+<tr class="odd">
+<td>探测报文数量</td>
+<td>6.9M</td>
+<td>?</td>
+<td>15.4M</td>
+</tr>
+<tr class="even">
+<td>发现接口数量</td>
+<td>126.8k</td>
+<td>103.8k</td>
+<td>1.3M</td>
+</tr>
+</tbody>
+</table>
+<p>最后，与其它拓扑发现系统进行比较，可以看到该研究在拓扑发现效率上与其它 拓扑发现系统相比有巨大的优势。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E6%B5%8B%E9%87%8F/" rel="tag"># 网络测量</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/07/multi-scale-traffic-aware/" rel="prev" title="Multi-scale Traffic Aware Cybersecurity Situational Awareness Online Model for Intelligent Power Substation Communication Network">
+                  <i class="fa fa-chevron-left"></i> Multi-scale Traffic Aware Cybersecurity Situational Awareness Online Model for Intelligent Power Substation Communication Network
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">vhqr0@github.com</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
